@@ -1,0 +1,15 @@
+app: session-manager
+service: session-manager
+custom:
+  stage: ${opt:stage, self:provider.stage}
+provider:
+  name: aws
+  stage: dev
+  region: ap-northeast-1
+  stackName: ${self:custom.stage}-ec2-stack
+  cfLogs: true
+resources:
+  # VPC・IGW・ SG
+  - ${file(resources/vpc.yml)}
+  # IAM
+  - ${file(resources/ec2.yml)}
