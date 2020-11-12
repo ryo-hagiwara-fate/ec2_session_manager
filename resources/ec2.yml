@@ -8,7 +8,7 @@ Resources:
       NetworkInterfaces: 
         - AssociatePublicIpAddress: "true"
           DeviceIndex: "0"
-          SubnetId: !Ref SubnetA
+          SubnetId: !Ref PublicSubnet
           GroupSet:
             - !Ref EC2SG
       UserData: !Base64 |

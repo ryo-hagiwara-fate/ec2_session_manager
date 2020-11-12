@@ -1,9 +1,14 @@
+Parameters:
+  VPCCIDR:
+    Type: String
+    Default: 10.0.0.0/16
+
 Resources:
   # vpc
   VPC:
     Type: 'AWS::EC2::VPC'
     Properties:
-      CidrBlock: 10.0.0.0/16
+      CidrBlock: !Ref VPCCIDR
       EnableDnsHostnames: true
       InstanceTenancy: default
       Tags:
@@ -37,7 +42,7 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref IGW
 
-  SubnetA:
+  PublicSubnet:
     Type: 'AWS::EC2::Subnet'
     Properties:
       AvailabilityZone: ap-northeast-1a
@@ -45,40 +50,12 @@ Resources:
       VpcId: !Ref VPC
       Tags:
         - Key: Name
-          Value: ${self:custom.stage}-SubnetA
-  SubnetB:
-    Type: 'AWS::EC2::Subnet'
-    Properties:
-      AvailabilityZone: ap-northeast-1c
-      CidrBlock: 10.0.1.0/24
-      VpcId: !Ref VPC
-      Tags:
-        - Key: Name
-          Value: ${self:custom.stage}-SubnetB
-  SubnetC:
-    Type: 'AWS::EC2::Subnet'
-    Properties:
-      AvailabilityZone: ap-northeast-1d
-      CidrBlock: 10.0.2.0/24
-      VpcId: !Ref VPC
-      Tags:
-        - Key: Name
-          Value: ${self:custom.stage}-SubnetC
+          Value: ${self:custom.stage}-PublicSubnet
           
-  SubnetRouteTableAssociationA:
+  PublicSubnetRouteTableAssociation:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
-      SubnetId: !Ref SubnetA
-      RouteTableId: !Ref PublicRoute
-  SubnetRouteTableAssociationB:
-    Type: 'AWS::EC2::SubnetRouteTableAssociation'
-    Properties:
-      SubnetId: !Ref SubnetB
-      RouteTableId: !Ref PublicRoute
-  SubnetRouteTableAssociationC:
-    Type: 'AWS::EC2::SubnetRouteTableAssociation'
-    Properties:
-      SubnetId: !Ref SubnetC
+      SubnetId: !Ref PublicSubnet
       RouteTableId: !Ref PublicRoute
   # security group
   EC2SG:

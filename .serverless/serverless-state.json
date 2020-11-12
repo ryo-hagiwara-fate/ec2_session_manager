@@ -9,7 +9,7 @@
       "variableSyntax": "\\${([^{}]+?)}",
       "name": "aws",
       "region": "ap-northeast-1",
-      "stackName": "sm-4-ec2-stack",
+      "stackName": "sm-5-ec2-stack",
       "cfLogs": true,
       "versionFunctions": true,
       "compiledCloudFormationTemplate": {
@@ -73,13 +73,15 @@
           "VPC": {
             "Type": "AWS::EC2::VPC",
             "Properties": {
-              "CidrBlock": "10.0.0.0/16",
+              "CidrBlock": {
+                "Ref": "VPCCIDR"
+              },
               "EnableDnsHostnames": true,
               "InstanceTenancy": "default",
               "Tags": [
                 {
                   "Key": "Name",
-                  "Value": "sm-4-VPC"
+                  "Value": "sm-5-VPC"
                 }
               ]
             }
@@ -90,7 +92,7 @@
               "Tags": [
                 {
                   "Key": "Name",
-                  "Value": "sm-4-IGW"
+                  "Value": "sm-5-IGW"
                 }
               ]
             }
@@ -115,7 +117,7 @@
               "Tags": [
                 {
                   "Key": "Name",
-                  "Value": "sm-4-PublicRoute"
+                  "Value": "sm-5-PublicRoute"
                 }
               ]
             }
@@ -132,7 +134,7 @@
               }
             }
           },
-          "SubnetA": {
+          "PublicSubnet": {
             "Type": "AWS::EC2::Subnet",
             "Properties": {
               "AvailabilityZone": "ap-northeast-1a",
@@ -143,70 +145,16 @@
               "Tags": [
                 {
                   "Key": "Name",
-                  "Value": "sm-4-SubnetA"
+                  "Value": "sm-5-PublicSubnet"
                 }
               ]
             }
           },
-          "SubnetB": {
-            "Type": "AWS::EC2::Subnet",
-            "Properties": {
-              "AvailabilityZone": "ap-northeast-1c",
-              "CidrBlock": "10.0.1.0/24",
-              "VpcId": {
-                "Ref": "VPC"
-              },
-              "Tags": [
-                {
-                  "Key": "Name",
-                  "Value": "sm-4-SubnetB"
-                }
-              ]
-            }
-          },
-          "SubnetC": {
-            "Type": "AWS::EC2::Subnet",
-            "Properties": {
-              "AvailabilityZone": "ap-northeast-1d",
-              "CidrBlock": "10.0.2.0/24",
-              "VpcId": {
-                "Ref": "VPC"
-              },
-              "Tags": [
-                {
-                  "Key": "Name",
-                  "Value": "sm-4-SubnetC"
-                }
-              ]
-            }
-          },
-          "SubnetRouteTableAssociationA": {
+          "PublicSubnetRouteTableAssociation": {
             "Type": "AWS::EC2::SubnetRouteTableAssociation",
             "Properties": {
               "SubnetId": {
-                "Ref": "SubnetA"
-              },
-              "RouteTableId": {
-                "Ref": "PublicRoute"
-              }
-            }
-          },
-          "SubnetRouteTableAssociationB": {
-            "Type": "AWS::EC2::SubnetRouteTableAssociation",
-            "Properties": {
-              "SubnetId": {
-                "Ref": "SubnetB"
-              },
-              "RouteTableId": {
-                "Ref": "PublicRoute"
-              }
-            }
-          },
-          "SubnetRouteTableAssociationC": {
-            "Type": "AWS::EC2::SubnetRouteTableAssociation",
-            "Properties": {
-              "SubnetId": {
-                "Ref": "SubnetC"
+                "Ref": "PublicSubnet"
               },
               "RouteTableId": {
                 "Ref": "PublicRoute"
@@ -237,7 +185,7 @@
               "Tags": [
                 {
                   "Key": "Name",
-                  "Value": "sm-4-EC2SG"
+                  "Value": "sm-5-EC2SG"
                 }
               ]
             }
@@ -253,7 +201,7 @@
                   "AssociatePublicIpAddress": "true",
                   "DeviceIndex": "0",
                   "SubnetId": {
-                    "Ref": "SubnetA"
+                    "Ref": "PublicSubnet"
                   },
                   "GroupSet": [
                     {
@@ -279,6 +227,12 @@
             "Value": {
               "Ref": "ServerlessDeploymentBucket"
             }
+          }
+        },
+        "Parameters": {
+          "VPCCIDR": {
+            "Type": "String",
+            "Default": "10.0.0.0/16"
           }
         }
       },
@@ -351,22 +305,30 @@
       }
     },
     "custom": {
-      "stage": "sm-4"
+      "stage": "sm-5"
     },
     "pluginsData": {},
     "functions": {},
     "resources": {
+      "Parameters": {
+        "VPCCIDR": {
+          "Type": "String",
+          "Default": "10.0.0.0/16"
+        }
+      },
       "Resources": {
         "VPC": {
           "Type": "AWS::EC2::VPC",
           "Properties": {
-            "CidrBlock": "10.0.0.0/16",
+            "CidrBlock": {
+              "Ref": "VPCCIDR"
+            },
             "EnableDnsHostnames": true,
             "InstanceTenancy": "default",
             "Tags": [
               {
                 "Key": "Name",
-                "Value": "sm-4-VPC"
+                "Value": "sm-5-VPC"
               }
             ]
           }
@@ -377,7 +339,7 @@
             "Tags": [
               {
                 "Key": "Name",
-                "Value": "sm-4-IGW"
+                "Value": "sm-5-IGW"
               }
             ]
           }
@@ -402,7 +364,7 @@
             "Tags": [
               {
                 "Key": "Name",
-                "Value": "sm-4-PublicRoute"
+                "Value": "sm-5-PublicRoute"
               }
             ]
           }
@@ -419,7 +381,7 @@
             }
           }
         },
-        "SubnetA": {
+        "PublicSubnet": {
           "Type": "AWS::EC2::Subnet",
           "Properties": {
             "AvailabilityZone": "ap-northeast-1a",
@@ -430,70 +392,16 @@
             "Tags": [
               {
                 "Key": "Name",
-                "Value": "sm-4-SubnetA"
+                "Value": "sm-5-PublicSubnet"
               }
             ]
           }
         },
-        "SubnetB": {
-          "Type": "AWS::EC2::Subnet",
-          "Properties": {
-            "AvailabilityZone": "ap-northeast-1c",
-            "CidrBlock": "10.0.1.0/24",
-            "VpcId": {
-              "Ref": "VPC"
-            },
-            "Tags": [
-              {
-                "Key": "Name",
-                "Value": "sm-4-SubnetB"
-              }
-            ]
-          }
-        },
-        "SubnetC": {
-          "Type": "AWS::EC2::Subnet",
-          "Properties": {
-            "AvailabilityZone": "ap-northeast-1d",
-            "CidrBlock": "10.0.2.0/24",
-            "VpcId": {
-              "Ref": "VPC"
-            },
-            "Tags": [
-              {
-                "Key": "Name",
-                "Value": "sm-4-SubnetC"
-              }
-            ]
-          }
-        },
-        "SubnetRouteTableAssociationA": {
+        "PublicSubnetRouteTableAssociation": {
           "Type": "AWS::EC2::SubnetRouteTableAssociation",
           "Properties": {
             "SubnetId": {
-              "Ref": "SubnetA"
-            },
-            "RouteTableId": {
-              "Ref": "PublicRoute"
-            }
-          }
-        },
-        "SubnetRouteTableAssociationB": {
-          "Type": "AWS::EC2::SubnetRouteTableAssociation",
-          "Properties": {
-            "SubnetId": {
-              "Ref": "SubnetB"
-            },
-            "RouteTableId": {
-              "Ref": "PublicRoute"
-            }
-          }
-        },
-        "SubnetRouteTableAssociationC": {
-          "Type": "AWS::EC2::SubnetRouteTableAssociation",
-          "Properties": {
-            "SubnetId": {
-              "Ref": "SubnetC"
+              "Ref": "PublicSubnet"
             },
             "RouteTableId": {
               "Ref": "PublicRoute"
@@ -524,7 +432,7 @@
             "Tags": [
               {
                 "Key": "Name",
-                "Value": "sm-4-EC2SG"
+                "Value": "sm-5-EC2SG"
               }
             ]
           }
@@ -540,7 +448,7 @@
                 "AssociatePublicIpAddress": "true",
                 "DeviceIndex": "0",
                 "SubnetId": {
-                  "Ref": "SubnetA"
+                  "Ref": "PublicSubnet"
                 },
                 "GroupSet": [
                   {
@@ -585,7 +493,7 @@
         "$ref": "$[\"service\"][\"functions\"]"
       },
       "package": {
-        "artifactDirectoryName": "serverless/session-manager/sm-4/1605191905965-2020-11-12T14:38:25.965Z"
+        "artifactDirectoryName": "serverless/session-manager/sm-5/1605192615779-2020-11-12T14:50:15.779Z"
       },
       "layers": {
         "$ref": "$[\"service\"][\"layers\"]"
@@ -595,7 +503,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/session-manager/sm-4/1605191905965-2020-11-12T14:38:25.965Z",
+    "artifactDirectoryName": "serverless/session-manager/sm-5/1605192615779-2020-11-12T14:50:15.779Z",
     "artifact": ""
   }
 }
