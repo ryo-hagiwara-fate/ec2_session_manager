@@ -1,9 +1,8 @@
 Resources:
-  EC2: 
+  PublicEC2: 
     Type: AWS::EC2::Instance
     Properties: 
       ImageId: ami-00d101850e971728d
-      KeyName: "wordpress1"
       InstanceType: t2.micro
       IamInstanceProfile: !Ref EC2InstanceProfile
       NetworkInterfaces: 
@@ -17,4 +16,23 @@ Resources:
         sudo yum install -y git
       Tags:
           - Key: Name
-            Value: ${self:custom.stage}-EC2
+            Value: ${self:custom.stage}-Public-EC2
+  
+  PrivateEC2: 
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: ami-00d101850e971728d
+      InstanceType: t2.micro
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          SubnetId: !Ref PrivateSubnet
+          GroupSet:
+            - !Ref EC2SG
+      UserData: !Base64 |
+        #!/bin/bash
+        sudo yum install -y git
+      Tags:
+          - Key: Name
+            Value: ${self:custom.stage}-Private-EC2
