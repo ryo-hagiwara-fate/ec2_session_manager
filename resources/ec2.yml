@@ -5,6 +5,7 @@ Resources:
       ImageId: ami-00d101850e971728d
       KeyName: "wordpress1"
       InstanceType: t2.micro
+      IamInstanceProfile: !Ref EC2InstanceProfile
       NetworkInterfaces: 
         - AssociatePublicIpAddress: "true"
           DeviceIndex: "0"
@@ -16,4 +17,4 @@ Resources:
         sudo yum install -y git
       Tags:
           - Key: Name
-            Value: ec2-a-cf
+            Value: ${self:custom.stage}-EC2

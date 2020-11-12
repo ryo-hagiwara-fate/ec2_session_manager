@@ -182,6 +182,9 @@
         "ImageId": "ami-00d101850e971728d",
         "KeyName": "wordpress1",
         "InstanceType": "t2.micro",
+        "IamInstanceProfile": {
+          "Ref": "EC2InstanceProfile"
+        },
         "NetworkInterfaces": [
           {
             "AssociatePublicIpAddress": "true",
@@ -202,9 +205,47 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "ec2-a-cf"
+            "Value": "sm-5-EC2"
           }
         ]
+      }
+    },
+    "EC2IAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "sm-5-SSM-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+        ]
+      }
+    },
+    "EC2InstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "EC2IAMRole"
+          }
+        ],
+        "InstanceProfileName": "sm-5-EC2InstanceProfile"
       }
     }
   },

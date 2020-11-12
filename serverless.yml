@@ -9,7 +9,6 @@ provider:
   stackName: ${self:custom.stage}-ec2-stack
   cfLogs: true
 resources:
-  # VPC・IGW・ SG
   - ${file(resources/vpc.yml)}
-  # IAM
   - ${file(resources/ec2.yml)}
+  - ${file(resources/iamRole.yml)}

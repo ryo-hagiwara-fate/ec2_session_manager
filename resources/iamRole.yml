@@ -1,0 +1,25 @@
+Resources:
+  EC2IAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ${self:custom.stage}-SSM-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17" 
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+        - !Ref EC2IAMRole
+      InstanceProfileName: ${self:custom.stage}-EC2InstanceProfile
