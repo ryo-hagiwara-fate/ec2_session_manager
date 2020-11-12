@@ -12,7 +12,7 @@ Parameters:
     Default: 10.0.1.0/24
 
 Resources:
-  # vpc
+  # VPC
   VPC:
     Type: 'AWS::EC2::VPC'
     Properties:
@@ -22,20 +22,20 @@ Resources:
       Tags:
         - Key: Name
           Value: ${self:custom.stage}-VPC
-  # internet gateway
+  # インターネットゲートウェイ
   IGW:
     Type: 'AWS::EC2::InternetGateway'
     Properties:
       Tags:
         - Key: Name
           Value: ${self:custom.stage}-IGW
-  # internet gatewayをvpcにアタッチ
+  # インターネットゲートウェイをvpcにアタッチする
   AttachIGW:
     Type: 'AWS::EC2::VPCGatewayAttachment'
     Properties:
       InternetGatewayId: !Ref IGW
       VpcId: !Ref VPC
-
+  # ルートの設定
   PublicRouteTable:
     Type: 'AWS::EC2::RouteTable'
     Properties:
@@ -43,7 +43,7 @@ Resources:
       Tags:
         - Key: Name
           Value: ${self:custom.stage}-PublicRouteTable
-
+          
   PrivateRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -58,7 +58,8 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref IGW
-
+  
+  # サブネットの構築
   PublicSubnet:
     Type: 'AWS::EC2::Subnet'
     Properties:
@@ -91,7 +92,7 @@ Resources:
       SubnetId: !Ref PrivateSubnet
       RouteTableId: !Ref PrivateRouteTable
 
-  # security group
+  # セキュリティグループ
   EC2SG:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -106,7 +107,6 @@ Resources:
         - Key: Name
           Value: ${self:custom.stage}-EC2SG
 
-  # vpcエンドポイントの作成
   EndpointSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -121,13 +121,13 @@ Resources:
           ToPort: 443
           CidrIp: !Ref VPCCIDR
 
+  # vpcエンドポイントの作成
   EndpointSSM:
     Type: AWS::EC2::VPCEndpoint
     Properties:
       PrivateDnsEnabled: true
       SecurityGroupIds:
         - !Ref EndpointSecurityGroup
-      # ServiceName: !Sub com.amazonaws.${AWS::Region}.ssm
       ServiceName: 
         !Join
           - "."
@@ -145,7 +145,6 @@ Resources:
       PrivateDnsEnabled: true
       SecurityGroupIds:
         - !Ref EndpointSecurityGroup
-      # ServiceName: !Sub com.amazonaws.${AWS::Region}.ssmmessages
       ServiceName: 
         !Join
           - "."
@@ -163,7 +162,6 @@ Resources:
       PrivateDnsEnabled: true
       SecurityGroupIds:
         - !Ref EndpointSecurityGroup
-      # ServiceName: !Sub com.amazonaws.${AWS::Region}.ec2messages
       ServiceName: 
         !Join
           - "."
@@ -180,7 +178,6 @@ Resources:
     Properties:
       RouteTableIds:
         - !Ref PrivateRouteTable
-      # ServiceName: !Sub com.amazonaws.${AWS::Region}.s3
       ServiceName: 
         !Join
           - "."
