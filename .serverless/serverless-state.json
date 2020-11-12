@@ -138,7 +138,9 @@
             "Type": "AWS::EC2::Subnet",
             "Properties": {
               "AvailabilityZone": "ap-northeast-1a",
-              "CidrBlock": "10.0.0.0/24",
+              "CidrBlock": {
+                "Ref": "PublicSubnetCIDR"
+              },
               "VpcId": {
                 "Ref": "VPC"
               },
@@ -274,6 +276,10 @@
           "VPCCIDR": {
             "Type": "String",
             "Default": "10.0.0.0/16"
+          },
+          "PublicSubnetCIDR": {
+            "Type": "String",
+            "Default": "10.0.0.0/24"
           }
         }
       },
@@ -355,6 +361,10 @@
         "VPCCIDR": {
           "Type": "String",
           "Default": "10.0.0.0/16"
+        },
+        "PublicSubnetCIDR": {
+          "Type": "String",
+          "Default": "10.0.0.0/24"
         }
       },
       "Resources": {
@@ -426,7 +436,9 @@
           "Type": "AWS::EC2::Subnet",
           "Properties": {
             "AvailabilityZone": "ap-northeast-1a",
-            "CidrBlock": "10.0.0.0/24",
+            "CidrBlock": {
+              "Ref": "PublicSubnetCIDR"
+            },
             "VpcId": {
               "Ref": "VPC"
             },
@@ -575,7 +587,7 @@
         "$ref": "$[\"service\"][\"functions\"]"
       },
       "package": {
-        "artifactDirectoryName": "serverless/session-manager/sm-5/1605193578392-2020-11-12T15:06:18.392Z"
+        "artifactDirectoryName": "serverless/session-manager/sm-5/1605193997786-2020-11-12T15:13:17.786Z"
       },
       "layers": {
         "$ref": "$[\"service\"][\"layers\"]"
@@ -585,7 +597,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/session-manager/sm-5/1605193578392-2020-11-12T15:06:18.392Z",
+    "artifactDirectoryName": "serverless/session-manager/sm-5/1605193997786-2020-11-12T15:13:17.786Z",
     "artifact": ""
   }
 }

@@ -2,6 +2,10 @@ Parameters:
   VPCCIDR:
     Type: String
     Default: 10.0.0.0/16
+  
+  PublicSubnetCIDR:
+    Type: String
+    Default: 10.0.0.0/24
 
 Resources:
   # vpc
@@ -46,7 +50,7 @@ Resources:
     Type: 'AWS::EC2::Subnet'
     Properties:
       AvailabilityZone: ap-northeast-1a
-      CidrBlock: 10.0.0.0/24
+      CidrBlock: !Ref PublicSubnetCIDR
       VpcId: !Ref VPC
       Tags:
         - Key: Name
